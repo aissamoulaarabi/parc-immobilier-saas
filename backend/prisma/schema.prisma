@@ -4,12 +4,12 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 
@@ -19,6 +19,9 @@ model Bien {
   type     String
   surface  Float
   statut   String
+
+  baux  Bail[]
+  interventions  Intervention[]
 }
 
 
@@ -28,4 +31,52 @@ model Locataire {
   prenom       String
   email        String
   telephone    String
+
+  baux  Bail[]
+}
+
+model Bail {
+  bail_id       Int       @id @default(autoincrement())
+  bien_id       Int
+  locataire_id  Int
+  dateDebut     DateTime
+  dateFin       DateTime
+  montantLoyer  Float
+  paiements  Paiement[]
+  quittances  Quittance[]
+
+  bien          Bien      @relation(fields: [bien_id], references: [bien_id])
+  locataire     Locataire @relation(fields: [locataire_id], references: [locataire_id])
+
+}
+
+
+model Paiement {
+  paiement_id  Int      @id @default(autoincrement())
+  bail_id      Int
+  date         DateTime
+  montant      Float
+  statut       String
+
+  bail         Bail     @relation(fields: [bail_id], references: [bail_id])
+}
+
+model Intervention {
+  intervention_id   Int      @id @default(autoincrement())
+  bien_id           Int
+  description       String
+  dateSignalement   DateTime
+  statut            String
+
+  bien              Bien     @relation(fields: [bien_id], references: [bien_id])
+}
+
+model Quittance {
+  quittance_id     Int      @id @default(autoincrement())
+  bail_id          Int
+  mois             Int
+  montant          Float
+  date_generation  DateTime
+
+  bail             Bail     @relation(fields: [bail_id], references: [bail_id])
 }
