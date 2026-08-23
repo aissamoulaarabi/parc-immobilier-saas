@@ -252,3 +252,16 @@ app.post('/api/auth/login', async (req, res) => {
   const token = jwt.sign({ id: utilisateur.utilisateur_id, role: utilisateur.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
   res.json({ token });
 });
+
+
+app.post('/api/locataires/:id/contacter', async (req, res) => {
+  const { message, canal } = req.body;
+  const locataire = await prisma.locataire.findUnique({
+    where: { locataire_id: parseInt(req.params.id) }
+  });
+
+  const strategie = canal === 'sms' ? new StrategieSMS() : new StrategieEmail();
+  strategie.envoyer(locataire, message);
+
+  res.json({ message: "Message envoyé" });
+});
