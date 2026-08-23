@@ -22,6 +22,8 @@ model Bien {
 
   baux  Bail[]
   interventions  Intervention[]
+  utilisateur_id  Int
+  utilisateur     Utilisateur  @relation(fields: [utilisateur_id], references: [utilisateur_id])
 }
 
 
@@ -79,4 +81,14 @@ model Quittance {
   date_generation  DateTime
 
   bail             Bail     @relation(fields: [bail_id], references: [bail_id])
+}
+
+
+model Utilisateur {
+  utilisateur_id    Int     @id @default(autoincrement())
+  email             String  @unique
+  motDePasseHash    String
+  role              String
+
+  biens             Bien[]
 }
