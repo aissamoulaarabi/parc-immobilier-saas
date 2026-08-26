@@ -11,3 +11,27 @@ export async function getLocataires() {
   return response.json();
 }
 
+
+export async function creerBien(bien) {
+  const response = await fetch(`${API_URL}/biens`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(bien)
+  });
+  return response.json();
+}
+
+export async function creerLocataire(locataire) {
+  const response = await fetch(`${API_URL}/locataires`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(locataire)
+  });
+  return response.json();
+}
+
+
+export async function supprimerBien(id) {
+  await fetch(`${API_URL}/biens/${id}`, { method: 'DELETE' });
+}
+
